@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Home, Calendar, GitBranch, MoreHorizontal, X, Users, Shuffle, Download, UserCircle, LogOut, Shield } from 'lucide-react';
+import { Home, Calendar, GitBranch, MoreHorizontal, X, Users, Shuffle, Download, UserCircle, LogOut, Shield, LogIn } from 'lucide-react';
 import { useState } from 'react';
 
 const mainItems = [
@@ -21,12 +21,6 @@ export default function BottomNav() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    setMenuOpen(false);
-    logout();
-    navigate('/login');
-  };
-
   return (
     <>
       {menuOpen && (
@@ -45,24 +39,32 @@ export default function BottomNav() {
                         `flex items-center gap-2 p-3 rounded-xl text-sm font-medium transition-all ${isActive ? 'bg-amber-500/15 text-amber-400' : 'text-gray-300 bg-[#1a1a1a]'}`
                       }
                     >
-                      <Icon size={16} />
-                      {label}
+                      <Icon size={16} /> {label}
                     </NavLink>
                   ))}
                 </div>
               </>
             )}
             <div className="border-t border-[#222] pt-3 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <div className="w-7 h-7 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xs font-bold">
-                  {user?.username?.[0]?.toUpperCase()}
-                </div>
-                <span>{user?.username}</span>
-              </div>
-              <button onClick={handleLogout} className="flex items-center gap-1.5 text-sm text-red-400 px-3 py-1.5 rounded-lg hover:bg-red-500/10">
-                <LogOut size={14} />
-                Dil
-              </button>
+              {user ? (
+                <>
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <div className="w-7 h-7 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xs font-bold">
+                      {user.username[0].toUpperCase()}
+                    </div>
+                    <span>{user.username}</span>
+                  </div>
+                  <button onClick={() => { setMenuOpen(false); logout(); navigate('/'); }}
+                    className="flex items-center gap-1.5 text-sm text-red-400 px-3 py-1.5 rounded-lg hover:bg-red-500/10">
+                    <LogOut size={14} /> Dil
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => { setMenuOpen(false); navigate('/login'); }}
+                  className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-black font-bold py-2.5 rounded-xl text-sm transition-all">
+                  <LogIn size={16} /> Hyr si Admin
+                </button>
+              )}
             </div>
           </div>
         </div>

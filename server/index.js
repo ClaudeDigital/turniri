@@ -13,6 +13,7 @@ app.use(`${BASE}/api/teams`, require('./routes/teams'));
 app.use(`${BASE}/api/matches`, require('./routes/matches'));
 app.use(`${BASE}/api/rounds`, require('./routes/rounds'));
 app.use(`${BASE}/api/users`, require('./routes/users'));
+app.use(`${BASE}/api/players`, require('./routes/players'));
 app.use(`${BASE}/api/export`, require('./routes/export'));
 
 const logoSrc = path.join(__dirname, '../client/public/logo.jpg');

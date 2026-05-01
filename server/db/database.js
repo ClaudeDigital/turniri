@@ -20,6 +20,15 @@ db.exec(`
     status TEXT NOT NULL DEFAULT 'aktiv'
   );
 
+  CREATE TABLE IF NOT EXISTS players (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    team_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    position TEXT,
+    jersey_number INTEGER,
+    FOREIGN KEY (team_id) REFERENCES teams(id)
+  );
+
   CREATE TABLE IF NOT EXISTS rounds (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     round_number INTEGER NOT NULL,

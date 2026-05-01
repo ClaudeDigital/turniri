@@ -20,21 +20,22 @@ export default function Ballina() {
       apiFetch('/matches/upcoming'),
       apiFetch('/matches/recent'),
       apiFetch('/rounds/active'),
-    ]).then(([today, up, rec, active]) => {
+      apiFetch('/teams'),
+    ]).then(([today, up, rec, active, teams]) => {
       setTodayMatches(today);
       setUpcoming(up);
       setRecent(rec);
       setActiveRound(active);
+      setChampion(teams.find(t => t.status === 'kampion') || null);
     }).catch(e => toast.error(e.message))
     .finally(() => setLoading(false));
-
-    apiFetch('/teams').then(teams => {
-      const champ = teams.find(t => t.status === 'kampion');
-      setChampion(champ || null);
-    }).catch(() => {});
   }, []);
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-gray-500">Duke ngarkuar...</div>;
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="w-8 h-8 border-2 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="p-4 md:p-6 max-w-2xl mx-auto">
@@ -56,33 +57,37 @@ export default function Ballina() {
         </div>
       )}
 
-      {todayMatches.length > 0 ? (
+      {todayMatches.length > 0 && (
         <Section title="Ndeshjet e Sotme" icon={<CalendarDays size={16} />}>
           {todayMatches.map(m => <MatchCard key={m.id} match={m} />)}
         </Section>
-      ) : upcoming.length > 0 ? (
-        <Section title="Ndeshjet e Ardhshme" icon={<Clock size={16} />}>
-          {upcoming.slice(0, 5).map(m => <MatchCard key={m.id} match={m} />)}
-        </Section>
-      ) : (
-        <div className="bg-[#111] border border-[#222] rounded-2xl p-8 text-center text-gray-500 mb-6">
-          <CalendarDays size={32} className="mx-auto mb-3 opacity-40" />
-          <p className="text-sm">Asnjë ndeshje e planifikuar</p>
-        </div>
       )}
 
       {recent.length > 0 && (
         <Section title="Rezultatet e Fundit" icon={<Trophy size={16} />}>
-          {recent.slice(0, 5).map(m => <MatchCard key={m.id} match={m} />)}
+          {recent.slice(0, 8).map(m => <MatchCard key={m.id} match={m} />)}
         </Section>
       )}
 
-      <div className="grid grid-cols-2 gap-3 mt-6">
+      {todayMatches.length === 0 && recent.length === 0 && upcoming.length > 0 && (
+        <Section title="Ndeshjet e Ardhshme" icon={<Clock size={16} />}>
+          {upcoming.slice(0, 6).map(m => <MatchCard key={m.id} match={m} />)}
+        </Section>
+      )}
+
+      {todayMatches.length === 0 && recent.length === 0 && upcoming.length === 0 && (
+        <div className="bg-[#111] border border-[#222] rounded-2xl p-10 text-center text-gray-500 mb-6">
+          <CalendarDays size={36} className="mx-auto mb-3 opacity-30" />
+          <p className="text-sm">Asnjë ndeshje e regjistruar ende</p>
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 gap-3 mt-4">
         <Link to="/bracket" className="bg-[#111] border border-[#222] hover:border-amber-500/40 rounded-xl p-4 flex items-center justify-between group transition-all">
           <div>
             <GitBranch size={20} className="text-amber-400 mb-1" />
             <p className="text-sm font-semibold text-white">Bracket</p>
-            <p className="text-xs text-gray-500">Shiko tabelën</p>
+            <p className="text-xs text-gray-500">Tabela</p>
           </div>
           <ChevronRight size={16} className="text-gray-600 group-hover:text-amber-400 transition-colors" />
         </Link>
